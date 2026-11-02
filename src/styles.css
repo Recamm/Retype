@@ -37,6 +37,13 @@
   background: var(--bg);
   color: var(--ink);
 }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    background: #292b2e;
+    color: #dce0e3;
+    color-scheme: dark;
+  }
+}
 * {
   box-sizing: border-box;
 }

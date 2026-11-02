@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none" role="img" aria-labelledby="logo-title">
+  <title id="logo-title">Logo de Retype</title>
+  <g stroke="#71c68e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="16" y="30" width="96" height="68" rx="8"/>
+    <path d="M32 48h1m20 0h1m20 0h1m20 0h1M42 64h1m20 0h1m20 0h1M38 82h52"/>
+  </g>
+</svg>

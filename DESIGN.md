@@ -9,11 +9,15 @@ without competing with the text. Do not copy Monkeytype branding.
 ## System
 
 - Manrope Variable for UI; IBM Plex Mono for typing and numerical metrics.
-- Default: neutral charcoal #292b2e, tool surfaces #232528, text #dce0e3,
+- Theme defaults to the system preference and follows changes while open.
+  Light and dark overrides remain configurable; preserve saved preferences.
+- Dark: neutral charcoal #292b2e, tool surfaces #232528, text #dce0e3,
   muted text #a6abb0, reference text #93999f and green accent #71c68e.
 - Green marks the cursor, brand, selected controls and primary result. Errors
   remain coral and underlined. Do not tint the background green.
-- Keep light and system themes available; honor saved theme preferences.
+- Brand assets live in `public/brand/`: a transparent keyboard logo and a clean
+  charcoal banner, supplied as SVG masters and high-resolution PNG exports.
+  The README uses the PNG banner to preserve the local Manrope typography.
 - Center practice vertically when space allows. Show three complete text lines,
   reserve space for live metrics and reveal those metrics only during a run.
 - Compact icon navigation with accessible names and tooltips. No promotional

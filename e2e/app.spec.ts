@@ -17,12 +17,14 @@ async function completeWords(page: Page, withError = false) {
 test('practice layout, local fonts and responsive controls', async ({ page }, info) => {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
+  await page.emulateMedia({ colorScheme: 'dark' })
   const response = await page.goto('/')
   if (process.env.PRODUCTION_CHECK) {
     expect(response?.headers()['content-security-policy']).toContain("script-src 'self'")
     expect(response?.headers()['x-content-type-options']).toBe('nosniff')
   }
   await expect(page.getByRole('textbox', { name: 'Texto de la prueba' })).toBeFocused()
+  await expect(page.locator('.brand img')).toHaveJSProperty('naturalWidth', 128)
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
   await expect(
     page.locator('.practice-view .keyboard-map, .daily-focus, .test-caption'),
@@ -103,6 +105,43 @@ test('practice layout, local fonts and responsive controls', async ({ page }, in
     animations: 'disabled',
   })
   expect(errors).toEqual([])
+})
+
+test('system theme follows the device and manual preferences persist', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.goto('/')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.locator('meta[name="theme-color"]').first()).toHaveAttribute(
+    'content',
+    '#f5f6f7',
+  )
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.locator('meta[name="theme-color"]').first()).toHaveAttribute(
+    'content',
+    '#292b2e',
+  )
+  await page.getByRole('button', { name: 'Ajustes', exact: true }).click()
+  const theme = page.getByRole('combobox', { name: 'Tema', exact: true })
+  await expect(theme).toHaveValue('system')
+  await theme.selectOption('light')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.emulateMedia({ colorScheme: 'light' })
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.reload()
+  await expect(theme).toHaveValue('light')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await theme.selectOption('dark')
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await theme.selectOption('system')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.reload()
+  await expect(theme).toHaveValue('system')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
 })
 
 test('corrected mistakes produce a summary and targeted practice', async ({ page }, info) => {

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="440" viewBox="0 0 1600 440" role="img" aria-labelledby="banner-title banner-description">
+  <title id="banner-title">Retype</title>
+  <desc id="banner-description">Practica de mecanografia. Logo verde sobre fondo gris oscuro.</desc>
+  <rect width="1600" height="440" fill="#292b2e"/>
+  <g transform="translate(570 105)" fill="none" stroke="#71c68e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="16" y="30" width="96" height="68" rx="8"/>
+    <path d="M32 48h1m20 0h1m20 0h1m20 0h1M42 64h1m20 0h1m20 0h1M38 82h52"/>
+  </g>
+  <text x="716" y="199" font-family="Manrope Variable, sans-serif" font-size="88" font-weight="750" fill="#dce0e3">retype<tspan fill="#71c68e">.</tspan></text>
+  <text x="800" y="282" text-anchor="middle" font-family="Manrope Variable, sans-serif" font-size="24" font-weight="450" fill="#a6abb0">Pr&#225;ctica de mecanograf&#237;a</text>
+</svg>

@@ -5,6 +5,7 @@ import {
   SlidersHorizontal,
   Moon,
   Sun,
+  Monitor,
   RotateCcw,
   Clock3,
   AlignLeft,
@@ -231,6 +232,10 @@ export default function App() {
     const apply = () => {
       document.documentElement.dataset.theme =
         settings.theme === 'system' ? (media?.matches ? 'dark' : 'light') : settings.theme
+      const color = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim()
+      document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+        meta.setAttribute('content', color)
+      })
     }
     apply()
     media?.addEventListener('change', apply)
@@ -331,7 +336,7 @@ export default function App() {
           aria-label="Retype, practica"
         >
           <span className="brand-mark">
-            <Keyboard size={22} strokeWidth={1.6} />
+            <img src="/brand/logo.svg" alt="" width="32" height="32" />
           </span>
           <span>
             retype<span className="brand-period">.</span>
@@ -370,7 +375,13 @@ export default function App() {
             aria-label="Cambiar tema"
             title="Cambiar tema"
           >
-            {settings.theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {settings.theme === 'system' ? (
+              <Monitor size={18} />
+            ) : settings.theme === 'dark' ? (
+              <Sun size={18} />
+            ) : (
+              <Moon size={18} />
+            )}
           </button>
         </div>
       </header>

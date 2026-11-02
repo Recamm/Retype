@@ -15,6 +15,7 @@ describe('local data and backups', () => {
     const loaded = readData({ getItem: () => null, setItem: () => {} })
     expect(loaded.data.history).toEqual([])
     expect(loaded.data.settings.language).toBe('es')
+    expect(loaded.data.settings.theme).toBe('system')
   })
 
   it('round trips a versioned backup', () => {
