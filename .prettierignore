@@ -1,0 +1,10 @@
+.agents/
+.createapp/
+.github/
+AGENTS.md
+node_modules/
+dist/
+artifacts/
+test-results/
+playwright-report/
+package-lock.json

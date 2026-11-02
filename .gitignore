@@ -1,0 +1,14 @@
+
+
+# CreateApp: archivos locales
+.createapp/tools/
+
+node_modules/
+dist/
+*.tsbuildinfo
+playwright-report/
+test-results/
+.env*
+!.env.example
+.vercel/
+artifacts/

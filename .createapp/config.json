@@ -1,0 +1,29 @@
+{
+  "name": "retype",
+  "directory": ".",
+  "agent": "copilot",
+  "agents": [
+    "copilot"
+  ],
+  "stack": "react-vite",
+  "template": "config-only",
+  "mode": "balanced",
+  "coordinator": "superpowers",
+  "testing": "balanced",
+  "autonomy": "milestones",
+  "parallel": false,
+  "design": "balanced",
+  "database": "none",
+  "goal": "Retype: app de mecanografia inspirada en Monkeytype, con identidad propia, ES/EN, modos tiempo/palabras/citas/zen/personalizado, resultados explicables y practica adaptativa local. React + Vite + TypeScript, despliegue estatico en Vercel, sin base de datos, cuentas ni backend; preferencias e historial limitado en localStorage, exportacion/importacion JSON. IMPORTANTE: no generar codigo ni scaffolding hasta autorizacion explicita del usuario. Ahora solo planificacion e instalacion de skills.",
+  "skills": null,
+  "packs": [
+    "addy",
+    "anthropic",
+    "ponytail",
+    "superpowers",
+    "uiux"
+  ],
+  "vercel_react": true,
+  "vercel_web": true,
+  "vercel_composition": false
+}
