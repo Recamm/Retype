@@ -24,9 +24,10 @@ globalmente para resolver un error; revisar el paquete que lo requiere.
 - Espanol sin tildes ni enie para teclado ingles, desde el selector de idioma o Ajustes.
 - Tecla de reinicio configurable en Ajustes: Tab, Escape, Enter o F2; desactivada por defecto.
 - Numeros y puntuacion opcionales en los modos generados.
-- Cursor y tamano de texto configurables; temas claro, oscuro y del sistema.
+- Escritura centrada sobre gris oscuro, con detalles verdes y controles compactos.
+- Cursor y tamano de texto configurables; tema oscuro inicial, claro y del sistema.
 - WPM, velocidad bruta, precision, consistencia, grafico y mapa de errores.
-- Entrenamiento local con palabras falladas, historial y objetivo diario.
+- Entrenamiento local con palabras falladas e historial.
 - Copias JSON con validacion, combinacion sin duplicados y borrado confirmado.
 
 El idioma seleccionado corresponde al contenido del test. La interfaz esta en
@@ -87,6 +88,8 @@ Los E2E usan Edge instalado en Windows. En otros sistemas, instalar Chromium
 de Playwright con `npx playwright install chromium`. Se comprueban escritorio
 1440x960 y movil 375x812, capturas, teclado, foco, Unicode, timers, copias y
 recuperacion ante almacenamiento bloqueado. Las capturas quedan en `artifacts/`.
+La practica tambien se comprueba a 320px y en escritorio de poca altura,
+incluido el acceso al reinicio y las tres lineas completas de texto.
 La emulacion movil Chromium no acredita Safari ni un teclado real de iPhone.
 
 El override de `minimatch` fija una version corregida para la cadena de lint.

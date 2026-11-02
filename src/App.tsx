@@ -5,7 +5,6 @@ import {
   SlidersHorizontal,
   Moon,
   Sun,
-  ArrowUpRight,
   RotateCcw,
   Clock3,
   AlignLeft,
@@ -18,7 +17,6 @@ import {
   Check,
   X,
   ShieldCheck,
-  ArrowRight,
   Square,
 } from 'lucide-react'
 import {
@@ -43,7 +41,6 @@ import {
   type Settings as Preferences,
 } from './lib/storage'
 import TypingArea from './components/TypingArea'
-import KeyboardMap from './components/KeyboardMap'
 import Dialog from './components/Dialog'
 
 const Results = lazy(() => import('./components/Results'))
@@ -89,11 +86,6 @@ export default function App() {
   const running = run.session.startedAt !== null && run.session.endedAt === null
   const [now, setNow] = useState(0)
   const metrics = getMetrics(run.session, now)
-  const today = new Date().toDateString()
-  const todaySessions = data.history.filter((item) => new Date(item.date).toDateString() === today)
-  const todayAverage = todaySessions.length
-    ? Math.round(todaySessions.reduce((sum, item) => sum + item.wpm, 0) / todaySessions.length)
-    : null
 
   function updateRun(next: Run) {
     runRef.current = next
@@ -320,7 +312,7 @@ export default function App() {
   const timeLeft = Math.max(0, Math.ceil(settings.duration - metrics.seconds))
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${running ? ' is-typing' : ''}${focused ? '' : ' input-unfocused'}`}>
       <a
         className="skip-link"
         href="#main"
@@ -341,7 +333,9 @@ export default function App() {
           <span className="brand-mark">
             <Keyboard size={22} strokeWidth={1.6} />
           </span>
-          retype<span className="brand-period">.</span>
+          <span>
+            retype<span className="brand-period">.</span>
+          </span>
         </button>
         <nav aria-label="Navegacion principal">
           {(
@@ -366,7 +360,6 @@ export default function App() {
           ))}
         </nav>
         <div className="header-end">
-          <span className="version-tag mono">BETA / 01</span>
           <button
             className="icon-button"
             onClick={() =>
@@ -381,7 +374,7 @@ export default function App() {
           </button>
         </div>
       </header>
-      <main id="main" tabIndex={-1}>
+      <main id="main" className={view === 'practice' ? 'practice-main' : undefined} tabIndex={-1}>
         {warning ? (
           <div className="storage-warning" role="alert">
             <ShieldCheck size={20} />
@@ -429,17 +422,10 @@ export default function App() {
               onProgress={() => navigate('progress')}
             />
           ) : (
-            <section className="practice-view reveal" aria-labelledby="practice-title">
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">01 / PR&Aacute;CTICA</p>
-                  <h1 id="practice-title">Tu propio ritmo.</h1>
-                </div>
-                <div className="session-state">
-                  <span className={`status-dot ${running ? 'live' : ''}`} />
-                  <span>{running ? (focused ? 'En marcha' : 'Tiempo activo') : 'Todo listo'}</span>
-                </div>
-              </div>
+            <section className="practice-view" aria-labelledby="practice-title">
+              <h1 id="practice-title" className="sr-only">
+                Pr&aacute;ctica
+              </h1>
               <div className="test-toolbar">
                 <div className="mode-controls" role="group" aria-label="Modo de practica">
                   {(Object.keys(modeLabels) as Preferences['mode'][]).map((mode) => {
@@ -558,7 +544,7 @@ export default function App() {
                   ) : null}
                   {run.trainingWords.length ? (
                     <span className="training-label">
-                      <Target size={14} /> enfoque personal{' '}
+                      <Target size={14} /> errores{' '}
                       <button
                         className="icon-button"
                         aria-label="Salir de practica personalizada"
@@ -632,15 +618,6 @@ export default function App() {
                     onFocusChange={setFocused}
                   />
                   <div className="test-bottom">
-                    <span className="mono test-caption">
-                      {run.trainingWords.length
-                        ? 'PRACTICA DE ENFOQUE'
-                        : settings.mode === 'zen'
-                          ? 'SIN PRISA. SIN LIMITE.'
-                          : settings.mode === 'quote'
-                            ? 'RETYPE ORIGINAL'
-                            : 'UNA PALABRA A LA VEZ.'}
-                    </span>
                     <div className="test-actions">
                       {settings.mode === 'zen' && running ? (
                         <button className="button secondary" onClick={() => complete(run.session)}>
@@ -651,7 +628,11 @@ export default function App() {
                         className="icon-button restart-button"
                         onClick={() => start(settings, run.trainingWords)}
                         aria-label="Reiniciar prueba"
-                        title="Reiniciar prueba"
+                        title={
+                          settings.restartKey === 'off'
+                            ? 'Reiniciar prueba'
+                            : `Reiniciar prueba (${settings.restartKey})`
+                        }
                       >
                         <RotateCcw size={20} />
                       </button>
@@ -659,82 +640,34 @@ export default function App() {
                   </div>
                 </>
               )}
-              <div className="practice-bottom">
-                <div className="daily-focus">
-                  <p className="eyebrow">HOY, A TU RITMO</p>
-                  <div className="daily-top">
-                    <h2>Un peque&ntilde;o h&aacute;bito.</h2>
-                    <span className="mono">{Math.min(todaySessions.length, 5)} / 5</span>
-                  </div>
-                  <div
-                    className="daily-progress"
-                    role="progressbar"
-                    aria-label="Objetivo diario de cinco sesiones"
-                    aria-valuenow={Math.min(todaySessions.length, 5)}
-                    aria-valuemin={0}
-                    aria-valuemax={5}
-                  >
-                    <span style={{ width: `${Math.min(todaySessions.length / 5, 1) * 100}%` }} />
-                  </div>
-                  <div className="daily-details">
-                    <span>{todaySessions.length} sesiones hoy</span>
-                    <span>{todayAverage === null ? '-' : todayAverage} wpm de media</span>
-                  </div>
-                  <button
-                    className="text-button"
-                    disabled={running}
-                    onClick={() => navigate('progress')}
-                  >
-                    Tu progreso <ArrowRight size={15} />
-                  </button>
-                </div>
-                <div className="keyboard-preview">
-                  <KeyboardMap
-                    active={run.session.input.at(-1)}
-                    compact
-                    englishLayout={settings.language === 'en' || settings.plainSpanish}
-                  />
-                  <span className="mono">
-                    QWERTY / {settings.language === 'en' || settings.plainSpanish ? 'EN' : 'ES'}
-                  </span>
-                </div>
-              </div>
             </section>
           )}
         </Suspense>
       </main>
       <footer className="app-footer">
-        <span className="footer-wordmark">
-          retype<span>.</span>
-        </span>
-        <span className="footer-note">
-          {storageBlocked ? 'Solo esta sesion' : 'Sin cuentas. Sin ruido.'}
-        </span>
-        <div>
-          <button
-            className="text-button"
-            onClick={() =>
-              setModal({
-                title: 'Tus datos, bajo tu control',
-                content: (
-                  <p>
-                    Retype guarda preferencias y res&uacute;menes en este navegador, sin una base de
-                    datos remota. No guarda los textos personalizados ni env&iacute;a tus
-                    pulsaciones. Las copias JSON contienen tu historial y preferencias.
-                  </p>
-                ),
-                label: 'Exportar mis datos',
-                action: () => {
-                  downloadBackup(data)
-                  setModal(null)
-                },
-              })
-            }
-          >
-            <ShieldCheck size={14} /> Privacidad <ArrowUpRight size={12} />
-          </button>
-          <span className="mono">v0.1</span>
-        </div>
+        {storageBlocked ? <span>Solo esta sesi&oacute;n</span> : null}
+        <button
+          className="text-button"
+          onClick={() =>
+            setModal({
+              title: 'Tus datos, bajo tu control',
+              content: (
+                <p>
+                  Retype guarda preferencias y res&uacute;menes en este navegador, sin una base de
+                  datos remota. No guarda los textos personalizados ni env&iacute;a tus pulsaciones.
+                  Las copias JSON contienen tu historial y preferencias.
+                </p>
+              ),
+              label: 'Exportar mis datos',
+              action: () => {
+                downloadBackup(data)
+                setModal(null)
+              },
+            })
+          }
+        >
+          <ShieldCheck size={14} /> Privacidad
+        </button>
       </footer>
       {modal ? (
         <Dialog

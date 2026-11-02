@@ -11,7 +11,7 @@ async function completeWords(page: Page, withError = false) {
     await input.press('Backspace')
   }
   await input.pressSequentially(target)
-  await expect(page.getByRole('heading', { name: 'Ese es tu ritmo.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Resultados', exact: true })).toBeVisible()
 }
 
 test('practice layout, local fonts and responsive controls', async ({ page }, info) => {
@@ -23,6 +23,11 @@ test('practice layout, local fonts and responsive controls', async ({ page }, in
     expect(response?.headers()['x-content-type-options']).toBe('nosniff')
   }
   await expect(page.getByRole('textbox', { name: 'Texto de la prueba' })).toBeFocused()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(
+    page.locator('.practice-view .keyboard-map, .daily-focus, .test-caption'),
+  ).toHaveCount(0)
+  await expect(page.locator('.live-stats')).toBeHidden()
   await page.evaluate(() => document.fonts.ready)
   await expect(page.getByRole('button', { name: 'Tiempo', exact: true })).toHaveAttribute(
     'aria-pressed',
@@ -35,28 +40,65 @@ test('practice layout, local fonts and responsive controls', async ({ page }, in
     fullPage: true,
     animations: 'disabled',
   })
-  const contrast = await page.evaluate(() => {
-    const style = getComputedStyle(document.documentElement)
-    const luminance = (hex: string) => {
-      const values = hex
-        .trim()
-        .replace('#', '')
-        .match(/.{2}/g)!
-        .map((value) => parseInt(value, 16) / 255)
-        .map((value) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4))
-      return values[0] * 0.2126 + values[1] * 0.7152 + values[2] * 0.0722
-    }
-    const background = luminance(style.getPropertyValue('--bg'))
-    return ['--muted', '--faint'].map((token) => {
-      const foreground = luminance(style.getPropertyValue(token))
-      return (Math.max(background, foreground) + 0.05) / (Math.min(background, foreground) + 0.05)
+  const contrast = () =>
+    page.evaluate(() => {
+      const style = getComputedStyle(document.documentElement)
+      const luminance = (hex: string) => {
+        const values = hex
+          .trim()
+          .replace('#', '')
+          .match(/.{2}/g)!
+          .map((value) => parseInt(value, 16) / 255)
+          .map((value) => (value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4))
+        return values[0] * 0.2126 + values[1] * 0.7152 + values[2] * 0.0722
+      }
+      const background = luminance(style.getPropertyValue('--bg'))
+      return ['--muted', '--faint'].map((token) => {
+        const foreground = luminance(style.getPropertyValue(token))
+        return (Math.max(background, foreground) + 0.05) / (Math.min(background, foreground) + 0.05)
+      })
     })
-  })
-  expect(Math.min(...contrast)).toBeGreaterThanOrEqual(4.5)
+  expect(Math.min(...(await contrast()))).toBeGreaterThanOrEqual(4.5)
   await page.getByRole('button', { name: 'Cambiar tema' }).click()
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  expect(Math.min(...(await contrast()))).toBeGreaterThanOrEqual(4.5)
+  await page.mouse.move(0, 0)
   await page.screenshot({
-    path: `artifacts/dark-${info.project.name}.png`,
+    path: `artifacts/light-${info.project.name}.png`,
+    fullPage: true,
+    animations: 'disabled',
+  })
+  await page.getByRole('button', { name: 'Cambiar tema' }).click()
+  const reference = (await page.getByTestId('reference').textContent())!
+  await page.getByRole('textbox', { name: 'Texto de la prueba' }).pressSequentially(reference[0])
+  await expect(page.locator('.live-stats')).toBeVisible()
+  const surface = (await page.locator('.typing-surface').boundingBox())!
+  const viewport = page.viewportSize()!
+  expect(surface.y).toBeGreaterThan(viewport.height * 0.25)
+  expect(surface.y + surface.height).toBeLessThan(viewport.height - 64)
+  const lines = await page.locator('.typing-copy').evaluate((element) => {
+    const lineHeight = parseFloat(getComputedStyle(element).lineHeight)
+    return element.parentElement!.clientHeight / lineHeight
+  })
+  expect(lines).toBeGreaterThanOrEqual(3)
+  expect(lines).toBeLessThan(3.5)
+  await page.mouse.move(0, 0)
+  await page.screenshot({
+    path: `artifacts/typing-${info.project.name}.png`,
+    fullPage: true,
+    animations: 'disabled',
+  })
+  const compact =
+    info.project.name === 'desktop' ? { width: 1280, height: 560 } : { width: 320, height: 740 }
+  await page.setViewportSize(compact)
+  expect(await page.evaluate(() => innerWidth)).toBe(compact.width)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  const restart = (await page
+    .getByRole('button', { name: 'Reiniciar prueba', exact: true })
+    .boundingBox())!
+  expect(restart.y + restart.height).toBeLessThan(compact.height)
+  await page.screenshot({
+    path: `artifacts/compact-${info.project.name}.png`,
     fullPage: true,
     animations: 'disabled',
   })
@@ -87,7 +129,7 @@ test('corrected mistakes produce a summary and targeted practice', async ({ page
     await page.evaluate(() => JSON.parse(localStorage.getItem('retype.v1')!).history.length),
   ).toBe(1)
   await page.getByRole('button', { name: 'Progreso', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Cada intento cuenta.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Progreso', exact: true })).toBeVisible()
   await expect(page.locator('.history-table tbody tr')).toHaveCount(1)
   await page.getByRole('combobox', { name: 'Filtrar por idioma' }).selectOption('en')
   await expect(page.getByText('Sin sesiones para estos filtros.')).toBeVisible()
@@ -103,10 +145,13 @@ test('corrected mistakes produce a summary and targeted practice', async ({ page
 test('navigation and skip link keep the current view accessible', async ({ page }, info) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Ajustes', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Hazlo tuyo.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Ajustes', exact: true })).toBeVisible()
+  await expect(page.locator('.type-preview .caret')).toBeVisible()
   await page.locator('.skip-link').focus()
   await page.keyboard.press('Enter')
-  await expect(page.getByRole('heading', { name: 'Hazlo tuyo.' })).toBeVisible()
+  await expect(page.locator('main')).toBeFocused()
+  await expect(page.locator('main')).toHaveCSS('outline-style', 'solid')
+  await expect(page.getByRole('heading', { name: 'Ajustes', exact: true })).toBeVisible()
   await page.screenshot({
     path: `artifacts/settings-${info.project.name}.png`,
     fullPage: true,
@@ -129,7 +174,7 @@ test('deadline is exact even when the timer advances abruptly', async ({ page })
   await page.getByRole('button', { name: '15', exact: true }).click()
   await page.getByRole('textbox', { name: 'Texto de la prueba' }).pressSequentially('a')
   await page.clock.runFor(16000)
-  await expect(page.getByRole('heading', { name: 'Ese es tu ritmo.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Resultados', exact: true })).toBeVisible()
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem('retype.v1')!).history[0].seconds),
   ).toBe(15)
@@ -143,7 +188,7 @@ test('custom text and zen support accented characters', async ({ page }) => {
   await page
     .getByRole('textbox', { name: 'Texto de la prueba' })
     .pressSequentially('ni\u00f1o \u00e1rbol')
-  await expect(page.getByRole('heading', { name: 'Ese es tu ritmo.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Resultados', exact: true })).toBeVisible()
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem('retype.v1')!).history[0].accuracy),
   ).toBe(100)
@@ -153,7 +198,7 @@ test('custom text and zen support accented characters', async ({ page }) => {
     .getByRole('textbox', { name: 'Texto de la prueba' })
     .pressSequentially('una palabra a la vez')
   await page.getByRole('button', { name: 'Finalizar', exact: true }).click()
-  await expect(page.getByRole('heading', { name: 'Ese es tu ritmo.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Resultados', exact: true })).toBeVisible()
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem('retype.v1')!).history[0].mode),
   ).toBe('zen')
@@ -202,7 +247,7 @@ test('English keyboard Spanish persists and accepts unaccented typing', async ({
   await page
     .getByRole('textbox', { name: 'Texto de la prueba' })
     .pressSequentially('nino arbol pinguino')
-  await expect(page.getByRole('heading', { name: 'Ese es tu ritmo.' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Resultados', exact: true })).toBeVisible()
   const result = await page.evaluate(
     () => JSON.parse(localStorage.getItem('retype.v1')!).history[0],
   )

@@ -79,7 +79,7 @@ export function defaultData(): LocalData {
       numbers: false,
       plainSpanish: false,
       restartKey: 'off',
-      theme: 'light',
+      theme: 'dark',
       fontSize: 30,
       caret: 'line',
     },

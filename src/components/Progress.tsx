@@ -40,12 +40,9 @@ export default function Progress({
       ? Math.round(filtered.reduce((sum, item) => sum + item[key], 0) / filtered.length)
       : 0
   return (
-    <section className="progress-view reveal" aria-labelledby="progress-title">
+    <section className="progress-view" aria-labelledby="progress-title">
       <div className="section-heading">
-        <div>
-          <p className="eyebrow">02 / PROGRESO</p>
-          <h1 id="progress-title">Cada intento cuenta.</h1>
-        </div>
+        <h1 id="progress-title">Progreso</h1>
         <div className="filters">
           <select
             aria-label="Filtrar por modo"
@@ -79,10 +76,9 @@ export default function Progress({
       {!history.length ? (
         <div className="empty-state">
           <Keyboard size={48} strokeWidth={1} />
-          <h2>Tu historia empieza aqu&iacute;.</h2>
-          <p>Todav&iacute;a no hay sesiones guardadas.</p>
+          <h2>Sin sesiones guardadas</h2>
           <button className="button primary" onClick={onPractice}>
-            Primer intento <ArrowRight size={17} />
+            Practicar <ArrowRight size={17} />
           </button>
         </div>
       ) : (
@@ -107,8 +103,7 @@ export default function Progress({
           </div>
           <div className="training-section">
             <div>
-              <p className="eyebrow">PR&Aacute;CTICA PERSONALIZADA</p>
-              <h2>Tu pr&oacute;ximo enfoque.</h2>
+              <h2>Palabras para practicar</h2>
               {weakWords.length ? (
                 <>
                   <div className="word-list">

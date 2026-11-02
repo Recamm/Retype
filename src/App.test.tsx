@@ -11,9 +11,9 @@ beforeEach(() => {
 describe('practice experience', () => {
   it('shows a usable test with no invented history', () => {
     render(<App />)
-    expect(screen.getByRole('textbox', { name: 'Texto de la prueba' })).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: 'Texto de la prueba' })).toHaveFocus()
     expect(screen.getByRole('button', { name: 'Tiempo' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByText('0 / 5')).toBeInTheDocument()
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
   })
 
   it('completes a word test and saves only a result summary', async () => {

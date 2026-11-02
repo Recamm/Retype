@@ -14,7 +14,7 @@ export default function SessionChart({ samples }: { samples: Sample[] }) {
   return (
     <div className="chart-section">
       <div className="chart-heading">
-        <h3>Tu ritmo</h3>
+        <h3>Velocidad</h3>
         <div className="chart-legend">
           <span>
             <i className="legend-dot teal" /> WPM

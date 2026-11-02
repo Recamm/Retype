@@ -2,23 +2,34 @@
 
 ## Identity
 
-An editorial workspace for deliberate typing practice, not a marketing page.
-The first screen is the test. The wordmark, a custom keyboard motif and the
-typing surface form the visual identity. Do not copy Monkeytype branding.
+A quiet typing tool. The first screen is the test: compact controls, three
+lines of text and restart. The wordmark and keyboard icon identify Retype
+without competing with the text. Do not copy Monkeytype branding.
 
 ## System
 
 - Manrope Variable for UI; IBM Plex Mono for typing and numerical metrics.
-- Light: off-white paper, charcoal text, teal selection and coral errors.
-- Dark: neutral charcoal, pale text, bright teal and accessible coral.
-- Compact navigation; full-width unframed sections; repeated items only in cards.
+- Default: neutral charcoal #292b2e, tool surfaces #232528, text #dce0e3,
+  muted text #a6abb0, reference text #93999f and green accent #71c68e.
+- Green marks the cursor, brand, selected controls and primary result. Errors
+  remain coral and underlined. Do not tint the background green.
+- Keep light and system themes available; honor saved theme preferences.
+- Center practice vertically when space allows. Show three complete text lines,
+  reserve space for live metrics and reveal those metrics only during a run.
+- Compact icon navigation with accessible names and tooltips. No promotional
+  headings, motivational copy, decorative numbering, beta tags or entrance effects.
+- Daily-goal and keyboard-preview panels do not belong on the typing screen.
+  History, training and error maps remain in Progress and Results.
+- Unframed layouts; controls have no decorative containers or shadows.
 - Spacing scale: 4, 8, 12, 16, 24, 32, 48, 64 pixels. Radius at most 8 pixels.
 - No gradients, hero banners, ornamental illustrations or nested cards.
 - Use Lucide icons, visible focus and accessible names for every icon button.
 - Settings in dedicated view. Modes use segmented controls; binary options use
   checkboxes; numeric settings use selects or segmented controls.
 - Typing errors use underlines as well as color. Motion respects reduced motion.
-- Responsive layouts at 375, 768, 1024 and 1440 pixels. Touch targets at least 44px.
+- Responsive layouts from 320px; verify 375px mobile, 1440px desktop and short
+  desktop viewports. Keep restart visible without shrinking typing text.
+- Touch targets at least 44px. Text contrast at least 4.5:1 in both themes.
 
 ## Metrics And Data
 

@@ -41,12 +41,9 @@ export default function Settings({
     }
   }
   return (
-    <section className="settings-view reveal" aria-labelledby="settings-title">
+    <section className="settings-view" aria-labelledby="settings-title">
       <div className="section-heading">
-        <div>
-          <p className="eyebrow">03 / AJUSTES</p>
-          <h1 id="settings-title">Hazlo tuyo.</h1>
-        </div>
+        <h1 id="settings-title">Ajustes</h1>
         <span className="local-label">
           <ShieldCheck size={15} /> Solo en este navegador
         </span>
@@ -54,7 +51,6 @@ export default function Settings({
       <section className="settings-section">
         <div className="settings-section-title">
           <h2>Apariencia</h2>
-          <span className="mono">01</span>
         </div>
         <div className="settings-grid">
           <label>
@@ -99,17 +95,16 @@ export default function Settings({
           </label>
         </div>
         <div className="type-preview" style={{ fontSize: settings.fontSize }}>
-          una palabra{' '}
           <span className="preview-accent">
-            a la vez
+            abc
             <span className={`caret caret-${settings.caret}`} />
-          </span>
+          </span>{' '}
+          def
         </div>
       </section>
       <section className="settings-section">
         <div className="settings-section-title">
           <h2>Preferencias de pr&aacute;ctica</h2>
-          <span className="mono">02</span>
         </div>
         <div className="settings-grid">
           <label>
@@ -188,7 +183,6 @@ export default function Settings({
       <section className="settings-section">
         <div className="settings-section-title">
           <h2>Tus datos</h2>
-          <span className="mono">03</span>
         </div>
         <div className="data-settings">
           <div>
@@ -228,7 +222,6 @@ export default function Settings({
       <section className="settings-section danger-section">
         <div className="settings-section-title">
           <h2>Restablecer</h2>
-          <span className="mono">04</span>
         </div>
         <div className="reset-actions">
           <button

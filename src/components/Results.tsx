@@ -25,12 +25,9 @@ export default function Results({
   const personalBest =
     comparable.length > 0 && result.wpm > Math.max(...comparable.map((item) => item.wpm))
   return (
-    <section className="results reveal" aria-labelledby="results-title">
+    <section className="results" aria-labelledby="results-title">
       <div className="section-heading">
-        <div>
-          <p className="eyebrow">INTENTO COMPLETADO</p>
-          <h1 id="results-title">Ese es tu ritmo.</h1>
-        </div>
+        <h1 id="results-title">Resultados</h1>
         <span className="result-context">
           {modeLabels[result.mode]} / {result.language.toUpperCase()} / {result.seconds.toFixed(1)}{' '}
           s
@@ -76,8 +73,7 @@ export default function Results({
       </Suspense>
       <div className="results-bottom">
         <section className="error-review">
-          <p className="eyebrow">EL SIGUIENTE PASO</p>
-          <h2>{result.errors ? 'Volvamos a estas palabras.' : 'Un intento limpio.'}</h2>
+          <h2>Errores</h2>
           {result.missedWords.length ? (
             <div className="word-list">
               {result.missedWords.slice(0, 12).map((word) => (
@@ -87,13 +83,7 @@ export default function Results({
                 </button>
               ))}
             </div>
-          ) : (
-            <p className="muted-copy">
-              {result.errors
-                ? `${result.errors} errores registrados.`
-                : '100% de precision. Sin errores registrados.'}
-            </p>
-          )}
+          ) : null}
           <div className="character-summary">
             <span>
               <i className="legend-dot teal" /> {result.correct} correctos

@@ -1,37 +1,37 @@
 :root {
   font-family: 'Manrope Variable', sans-serif;
-  color: #29322f;
-  background: #f7f8f5;
+  color: #303336;
+  background: #f5f6f7;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  --bg: #f7f8f5;
+  --bg: #f5f6f7;
   --surface: #fff;
-  --ink: #29322f;
-  --muted: #626f66;
-  --faint: #657269;
-  --accent: #127b6c;
-  --accent-soft: #e5efea;
-  --border: #dde3dc;
+  --ink: #303336;
+  --muted: #64696e;
+  --faint: #63696f;
+  --accent: #237743;
+  --accent-soft: #e5efe8;
+  --border: #dcdfe1;
   --error: #b8463e;
   --error-soft: #f6e4de;
-  --key: #edf0e9;
-  --shadow: 0 16px 64px #1b35252b;
+  --key: #e9ecee;
+  --shadow: 0 16px 64px #00000024;
   letter-spacing: 0;
   color-scheme: light;
 }
 :root[data-theme='dark'] {
-  --bg: #202421;
-  --surface: #282d29;
-  --ink: #e8ede6;
-  --muted: #a0aca2;
-  --faint: #9ba59d;
-  --accent: #77d2b6;
-  --accent-soft: #2a4036;
-  --border: #3c443e;
+  --bg: #292b2e;
+  --surface: #232528;
+  --ink: #dce0e3;
+  --muted: #a6abb0;
+  --faint: #93999f;
+  --accent: #71c68e;
+  --accent-soft: #304039;
+  --border: #414448;
   --error: #f1988e;
   --error-soft: #523832;
-  --key: #2b332d;
+  --key: #323539;
   --shadow: 0 16px 64px #0005;
   color-scheme: dark;
   background: var(--bg);
@@ -70,6 +70,7 @@ input,
 textarea {
   outline: none;
 }
+main:focus-visible,
 button:focus-visible,
 a:focus-visible,
 select:focus-visible,
@@ -93,7 +94,7 @@ p {
   margin: 0;
 }
 h1 {
-  font-size: 32px;
+  font-size: 26px;
   line-height: 1.25;
   font-weight: 650;
 }
@@ -114,39 +115,43 @@ svg {
   color: var(--accent);
 }
 .app-shell {
-  max-width: 1168px;
+  max-width: 1120px;
   margin: auto;
   padding: 0 40px;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
+.app-shell > main {
+  flex: 1;
+}
+.practice-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .app-header {
-  height: 106px;
+  min-height: 88px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--border);
-  gap: 40px;
+  gap: 24px;
 }
 .brand {
   display: flex;
   align-items: center;
   padding: 0;
-  font-size: 29px;
+  font-size: 25px;
   font-weight: 750;
   gap: 10px;
 }
 .brand-mark {
   width: 37px;
   height: 37px;
-  border: 1px solid var(--accent);
   color: var(--accent);
-  border-radius: 7px;
   display: grid;
   place-items: center;
 }
 .brand-period {
-  margin-left: -11px;
   color: var(--accent);
 }
 .app-header nav {
@@ -154,30 +159,24 @@ svg {
   gap: 10px;
   align-self: stretch;
   align-items: center;
-  margin: auto;
+  margin: 0;
 }
 .nav-button {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 13px 15px;
+  padding: 12px;
+  width: 44px;
   min-height: 44px;
   font-size: 13px;
   color: var(--muted);
   position: relative;
 }
 .nav-button.active {
-  color: var(--ink);
-  font-weight: 700;
+  color: var(--accent);
 }
-.nav-button.active:after {
-  content: '';
-  position: absolute;
-  bottom: -17px;
-  left: 15px;
-  right: 15px;
-  height: 2px;
-  background: var(--accent);
+.nav-button span {
+  display: none;
 }
 .nav-button:hover:not(:disabled) {
   color: var(--accent);
@@ -186,11 +185,7 @@ svg {
   display: flex;
   align-items: center;
   gap: 19px;
-}
-.version-tag {
-  font-size: 10px;
-  color: var(--muted);
-  white-space: nowrap;
+  margin-left: auto;
 }
 .icon-button {
   width: 44px;
@@ -205,15 +200,8 @@ svg {
   background: var(--accent-soft);
   color: var(--accent);
 }
-.mono,
-.eyebrow {
+.mono {
   font-family: 'IBM Plex Mono', monospace;
-}
-.eyebrow {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--muted);
-  margin-bottom: 13px;
 }
 .section-heading {
   display: flex;
@@ -222,24 +210,10 @@ svg {
   gap: 24px;
   margin-bottom: 32px;
 }
-.session-state {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 12px;
-  color: var(--muted);
+.practice-view {
+  width: 100%;
+  padding: 48px 0;
 }
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--accent-soft);
-}
-.status-dot.live {
-  animation: pulse 2s ease-in-out infinite;
-}
-.practice-view,
 .results,
 .progress-view,
 .settings-view {
@@ -249,8 +223,6 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
   padding: 10px 0;
   gap: 12px;
   min-height: 65px;
@@ -274,7 +246,6 @@ svg {
 }
 .mode-button.selected {
   color: var(--accent);
-  background: var(--accent-soft);
   font-weight: 700;
 }
 .mode-button:hover:not(:disabled) {
@@ -298,8 +269,6 @@ svg {
 .length-controls button.selected {
   color: var(--accent);
   font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 9px;
 }
 .unit-label {
   font-family: 'IBM Plex Mono', monospace;
@@ -318,7 +287,8 @@ svg {
   background: transparent;
   border: none;
   padding: 10px 22px 10px 0;
-  font-size: 11px;
+  min-height: 44px;
+  font-size: 12px;
   font-family: 'IBM Plex Mono', monospace;
   color: var(--muted);
   max-width: 190px;
@@ -358,9 +328,13 @@ svg {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 36px 0 21px;
+  margin: 24px 0 16px;
   gap: 12px;
   min-height: 39px;
+  visibility: hidden;
+}
+.is-typing .live-stats {
+  visibility: visible;
 }
 .time-stat {
   display: flex;
@@ -369,7 +343,7 @@ svg {
 }
 .time-stat > span:first-child {
   color: var(--accent);
-  font-size: 28px;
+  font-size: 23px;
   font-weight: 500;
 }
 .time-stat > span:last-child {
@@ -389,23 +363,24 @@ svg {
   font-weight: 500;
 }
 .typing-surface {
+  --rendered-typing-size: var(--typing-size);
   position: relative;
-  min-height: 165px;
+  min-height: calc(var(--rendered-typing-size) * 5.4 + 12px);
   cursor: text;
 }
 .typing-surface:focus-within {
   border-radius: 2px;
 }
 .typing-viewport {
-  height: 165px;
+  height: calc(var(--rendered-typing-size) * 5.4 + 12px);
   overflow: hidden;
-  padding: 4px 0 20px;
+  padding: 6px 0;
   scrollbar-width: none;
 }
 .typing-copy {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: var(--typing-size);
-  line-height: 1.85;
+  font-size: var(--rendered-typing-size);
+  line-height: 1.8;
   color: var(--faint);
   overflow-wrap: anywhere;
   white-space: pre-wrap;
@@ -466,19 +441,17 @@ svg {
   height: 2px;
   width: 0.6em;
 }
+.input-unfocused .typing-surface .caret {
+  visibility: hidden;
+}
 .test-bottom {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
   padding-top: 15px;
-  border-bottom: 1px solid var(--border);
   padding-bottom: 26px;
-  min-height: 85px;
-}
-.test-caption {
-  font-size: 9px;
-  color: var(--muted);
+  min-height: 80px;
 }
 .test-actions {
   display: flex;
@@ -486,52 +459,7 @@ svg {
   gap: 10px;
 }
 .restart-button {
-  border: 1px solid var(--border);
-  color: var(--ink);
-}
-.practice-bottom {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-  margin: 33px 0 35px;
-}
-.daily-focus {
-  max-width: 420px;
-}
-.daily-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.daily-top h2 {
-  font-size: 16px;
-}
-.daily-top > span {
-  font-size: 12px;
-  color: var(--accent);
-}
-.daily-progress {
-  height: 3px;
-  background: var(--border);
-  margin: 17px 0 10px;
-  overflow: hidden;
-}
-.daily-progress > span {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  transition: width 0.3s;
-}
-.daily-details {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 10px;
   color: var(--muted);
-  gap: 14px;
-  margin-bottom: 15px;
 }
 .text-button {
   display: inline-flex;
@@ -545,20 +473,6 @@ svg {
 }
 .text-button:hover:not(:disabled) {
   color: var(--accent);
-}
-.daily-focus > .text-button {
-  color: var(--accent);
-  font-size: 11px;
-}
-.keyboard-preview {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 11px;
-}
-.keyboard-preview > span {
-  font-size: 9px;
-  color: var(--muted);
 }
 .keyboard-map {
   width: min(100%, 370px);
@@ -617,24 +531,10 @@ svg {
   display: flex;
   align-items: center;
   gap: 22px;
-  min-height: 80px;
-  border-top: 1px solid var(--border);
+  justify-content: flex-end;
+  min-height: 64px;
   color: var(--muted);
   font-size: 10px;
-}
-.footer-wordmark {
-  font-weight: 750;
-  font-size: 17px;
-  color: var(--ink);
-}
-.footer-wordmark > span {
-  color: var(--accent);
-}
-.app-footer > div {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 22px;
 }
 .app-footer .text-button {
   font-size: 10px;
@@ -872,7 +772,7 @@ select {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 36px;
   font-weight: 400;
-  color: var(--accent);
+  color: var(--ink);
 }
 .empty-state {
   min-height: 365px;
@@ -998,10 +898,6 @@ td {
 .settings-section-title h2 {
   font-size: 17px;
 }
-.settings-section-title span {
-  font-size: 10px;
-  color: var(--muted);
-}
 .settings-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1026,7 +922,7 @@ td {
   overflow-wrap: anywhere;
 }
 .preview-accent {
-  color: var(--accent);
+  color: var(--ink);
   position: relative;
 }
 .preview-accent .caret {
@@ -1079,7 +975,7 @@ td {
   box-shadow: var(--shadow);
 }
 .dialog::backdrop {
-  background: #16231c66;
+  background: #0009;
   backdrop-filter: blur(3px);
 }
 .dialog-heading {
@@ -1179,19 +1075,6 @@ td {
 .skip-link:focus {
   top: 12px;
 }
-.reveal {
-  animation: reveal 0.4s ease-out both;
-}
-@keyframes reveal {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 @keyframes blink {
   0%,
   48% {
@@ -1202,32 +1085,15 @@ td {
     opacity: 0;
   }
 }
-@keyframes pulse {
-  50% {
-    box-shadow: 0 0 0 6px var(--accent-soft);
-  }
-}
 @media (min-width: 1440px) {
   .app-shell {
-    max-width: 1248px;
-    padding: 0 64px;
+    max-width: 1160px;
+    padding: 0 40px;
   }
-  .practice-view,
   .results,
   .progress-view,
   .settings-view {
     padding-top: 57px;
-  }
-  .live-stats {
-    margin-top: 46px;
-  }
-  .typing-viewport,
-  .typing-surface {
-    height: 185px;
-    min-height: 185px;
-  }
-  .practice-bottom {
-    margin: 38px 0 45px;
   }
 }
 @media (max-width: 950px) {
@@ -1239,9 +1105,6 @@ td {
   }
   .header-end {
     gap: 5px;
-  }
-  .version-tag {
-    display: none;
   }
   .nav-button {
     padding: 13px 12px;
@@ -1259,9 +1122,6 @@ td {
   }
   .mode-button svg {
     display: none;
-  }
-  .practice-bottom {
-    gap: 35px;
   }
   .results-bottom,
   .training-section {
@@ -1288,16 +1148,12 @@ td {
   }
   .app-header {
     height: 86px;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    min-height: 86px;
+    gap: 8px;
   }
   .brand {
     font-size: 25px;
     gap: 8px;
-  }
-  .brand-period {
-    margin-left: -9px;
   }
   .brand-mark {
     width: 32px;
@@ -1308,7 +1164,7 @@ td {
   }
   .app-header nav {
     margin: 0;
-    gap: 3px;
+    gap: 0;
   }
   .nav-button {
     min-width: 44px;
@@ -1317,18 +1173,9 @@ td {
   .nav-button span {
     display: none;
   }
-  .nav-button.active:after {
-    bottom: -8px;
-    left: 10px;
-    right: 10px;
-  }
   .header-end {
     margin-left: auto;
   }
-  .header-end .icon-button {
-    width: 36px;
-  }
-  .practice-view,
   .results,
   .progress-view,
   .settings-view {
@@ -1339,15 +1186,7 @@ td {
     gap: 15px;
   }
   .section-heading h1 {
-    font-size: 27px;
-  }
-  .eyebrow {
-    font-size: 9px;
-    margin-bottom: 11px;
-  }
-  .session-state {
-    font-size: 10px;
-    gap: 8px;
+    font-size: 25px;
   }
   .test-toolbar {
     padding: 7px 0 9px;
@@ -1361,7 +1200,7 @@ td {
   .mode-button {
     font-size: 11px;
     padding: 0 8px;
-    min-height: 42px;
+    min-height: 44px;
   }
   .length-controls {
     padding-left: 0;
@@ -1383,6 +1222,7 @@ td {
   .test-options {
     gap: 8px;
     margin-top: 6px;
+    flex-wrap: wrap;
   }
   .language-select select {
     font-size: 10px;
@@ -1423,44 +1263,12 @@ td {
   .live-stat-pair strong {
     font-size: 11px;
   }
-  .typing-copy {
-    font-size: min(var(--typing-size), 26px);
-    line-height: 1.95;
-  }
-  .typing-surface,
-  .typing-viewport {
-    height: 159px;
-    min-height: 159px;
-  }
-  .test-caption {
-    font-size: 8px;
+  .typing-surface {
+    --rendered-typing-size: min(var(--typing-size), 26px);
   }
   .test-bottom {
     padding-bottom: 20px;
     min-height: 70px;
-  }
-  .practice-bottom {
-    grid-template-columns: 1fr;
-    gap: 22px;
-    margin: 26px 0 30px;
-  }
-  .daily-focus {
-    max-width: none;
-  }
-  .keyboard-preview {
-    padding-top: 3px;
-  }
-  .keyboard-preview .keyboard-map {
-    width: 290px;
-  }
-  .daily-top h2 {
-    font-size: 16px;
-  }
-  .daily-focus > .text-button {
-    min-height: 36px;
-  }
-  .daily-details {
-    font-size: 10px;
   }
   .app-footer {
     min-height: 72px;
@@ -1615,6 +1423,32 @@ td {
   }
   .history-table {
     min-width: 630px;
+  }
+}
+@media (max-width: 350px) {
+  .brand-mark {
+    display: none;
+  }
+}
+@media (max-height: 700px) and (min-width: 641px) {
+  .app-header {
+    min-height: 72px;
+  }
+  .practice-view {
+    padding: 12px 0;
+  }
+  .test-options {
+    margin-top: 4px;
+  }
+  .live-stats {
+    margin: 12px 0 8px;
+  }
+  .test-bottom {
+    min-height: 64px;
+    padding: 8px 0;
+  }
+  .app-footer {
+    min-height: 44px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
