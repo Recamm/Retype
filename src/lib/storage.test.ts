@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { defaultData, parseBackup, readData, writeData, mergeHistory, makeResult } from './storage'
+import {
+  defaultData,
+  parseBackup,
+  readData,
+  writeData,
+  mergeHistory,
+  makeResult,
+  recordKey,
+} from './storage'
 import { createSession, finishSession, updateInput } from './engine'
 
 describe('local data and backups', () => {
@@ -11,7 +19,38 @@ describe('local data and backups', () => {
 
   it('round trips a versioned backup', () => {
     const data = defaultData()
+    data.settings.plainSpanish = true
+    data.settings.restartKey = 'Tab'
     expect(parseBackup(JSON.stringify(data))).toEqual(data)
+  })
+
+  it('reads older version-one settings and results without losing history', () => {
+    const data = defaultData()
+    const session = finishSession(updateInput(createSession('hola'), 'hola', 1000), 6000)
+    const result = makeResult(session, data.settings)
+    const legacySettings: Partial<typeof data.settings> = { ...data.settings }
+    const legacyResult: Partial<typeof result> = { ...result }
+    delete legacySettings.plainSpanish
+    delete legacySettings.restartKey
+    delete legacyResult.plainSpanish
+    const backup = JSON.stringify({ ...data, settings: legacySettings, history: [legacyResult] })
+    const expected = { ...data, history: [result] }
+    expect(parseBackup(backup)).toEqual(expected)
+    expect(readData({ getItem: () => backup, setItem: () => {} }).data).toEqual(expected)
+  })
+
+  it('keeps plain Spanish records separate without changing English records', () => {
+    const settings = defaultData().settings
+    const session = finishSession(updateInput(createSession('hola'), 'hola', 1000), 6000)
+    const standard = makeResult(session, settings)
+    const plain = makeResult(session, { ...settings, plainSpanish: true })
+    expect(standard.plainSpanish).toBe(false)
+    expect(plain.plainSpanish).toBe(true)
+    expect(recordKey(plain)).not.toBe(recordKey(standard))
+    expect(recordKey({ ...plain, language: 'en' })).toBe(recordKey({ ...standard, language: 'en' }))
+    expect(
+      makeResult(session, { ...settings, language: 'en', plainSpanish: true }).plainSpanish,
+    ).toBe(false)
   })
 
   it('rejects invalid versions, oversized files and invalid settings', () => {

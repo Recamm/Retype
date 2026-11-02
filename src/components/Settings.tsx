@@ -154,6 +154,35 @@ export default function Settings({
               ))}
             </select>
           </label>
+          <label>
+            Espa&ntilde;ol
+            <span className="modifiers">
+              <input
+                type="checkbox"
+                aria-label="Espa&ntilde;ol sin tildes ni &ntilde;"
+                checked={settings.plainSpanish}
+                disabled={settings.language !== 'es'}
+                onChange={(event) => onChange({ plainSpanish: event.target.checked })}
+              />
+              Sin tildes ni &ntilde;
+            </span>
+          </label>
+          <label>
+            Tecla de reinicio
+            <select
+              aria-label="Tecla de reinicio"
+              value={settings.restartKey}
+              onChange={(event) =>
+                onChange({ restartKey: event.target.value as Preferences['restartKey'] })
+              }
+            >
+              <option value="off">Desactivado</option>
+              <option value="Tab">Tab</option>
+              <option value="Escape">Escape</option>
+              <option value="Enter">Enter</option>
+              <option value="F2">F2</option>
+            </select>
+          </label>
         </div>
       </section>
       <section className="settings-section">

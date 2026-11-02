@@ -9,6 +9,8 @@ export const settingsSchema = z
     wordCount: z.union([z.literal(10), z.literal(25), z.literal(50), z.literal(100)]),
     punctuation: z.boolean(),
     numbers: z.boolean(),
+    plainSpanish: z.boolean().default(false),
+    restartKey: z.enum(['off', 'Tab', 'Escape', 'Enter', 'F2']).default('off'),
     theme: z.enum(['light', 'dark', 'system']),
     fontSize: z.union([z.literal(22), z.literal(26), z.literal(30), z.literal(34)]),
     caret: z.enum(['line', 'block', 'underline']),
@@ -28,6 +30,7 @@ export const resultSchema = z
     wordCount: settingsSchema.shape.wordCount,
     punctuation: z.boolean(),
     numbers: z.boolean(),
+    plainSpanish: z.boolean().default(false),
     training: z.boolean(),
     length: z.number().int().min(0).max(10000),
     wpm: metric,
@@ -74,6 +77,8 @@ export function defaultData(): LocalData {
       wordCount: 25,
       punctuation: false,
       numbers: false,
+      plainSpanish: false,
+      restartKey: 'off',
       theme: 'light',
       fontSize: 30,
       caret: 'line',
@@ -135,6 +140,7 @@ export function makeResult(session: Session, settings: Settings, training = fals
     wordCount: settings.wordCount,
     punctuation: settings.punctuation,
     numbers: settings.numbers,
+    plainSpanish: settings.language === 'es' && settings.plainSpanish,
     training,
     length: session.target.length,
     ...metrics,
@@ -157,6 +163,7 @@ export function recordKey(
     | 'length'
     | 'punctuation'
     | 'numbers'
+    | 'plainSpanish'
     | 'training'
   >,
 ): string {
@@ -172,6 +179,7 @@ export function recordKey(
     length,
     result.punctuation,
     result.numbers,
+    result.language === 'es' && result.plainSpanish,
     result.training,
   ].join(':')
 }

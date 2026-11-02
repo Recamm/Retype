@@ -123,7 +123,15 @@ export default function App() {
     commit(next)
     if (
       Object.keys(patch).some((key) =>
-        ['mode', 'language', 'duration', 'wordCount', 'punctuation', 'numbers'].includes(key),
+        [
+          'mode',
+          'language',
+          'duration',
+          'wordCount',
+          'punctuation',
+          'numbers',
+          'plainSpanish',
+        ].includes(key),
       )
     )
       start(next.settings)
@@ -189,6 +197,34 @@ export default function App() {
     if (next.endedAt !== null) complete(next)
     else if (next !== current.session) updateRun({ ...current, session: next })
   })
+  const restartShortcut = useEffectEvent((event: KeyboardEvent) => {
+    if (
+      view !== 'practice' ||
+      modal ||
+      customOpen ||
+      settings.restartKey === 'off' ||
+      event.key !== settings.restartKey ||
+      event.defaultPrevented ||
+      event.repeat ||
+      event.isComposing ||
+      event.ctrlKey ||
+      event.altKey ||
+      event.metaKey ||
+      event.shiftKey
+    )
+      return
+    const target = event.target instanceof Element ? event.target : null
+    const control = target?.closest(
+      'input, textarea, select, button, a, summary, [contenteditable], dialog',
+    )
+    if (control && !control.matches('.typing-input')) return
+    event.preventDefault()
+    start(settings, runRef.current.trainingWords)
+  })
+  useEffect(() => {
+    window.addEventListener('keydown', restartShortcut)
+    return () => window.removeEventListener('keydown', restartShortcut)
+  }, [])
   useEffect(() => {
     const timer = setInterval(heartbeat, 100)
     return () => clearInterval(timer)
@@ -476,12 +512,22 @@ export default function App() {
                   <select
                     aria-label="Idioma de la prueba"
                     disabled={running}
-                    value={settings.language}
-                    onChange={(event) =>
-                      changeSettings({ language: event.target.value as Preferences['language'] })
+                    value={
+                      settings.language === 'es' && settings.plainSpanish
+                        ? 'es-plain'
+                        : settings.language
                     }
+                    onChange={(event) => {
+                      const language = event.target.value
+                      changeSettings(
+                        language === 'es-plain'
+                          ? { language: 'es', plainSpanish: true }
+                          : { language: language as Preferences['language'], plainSpanish: false },
+                      )
+                    }}
                   >
                     <option value="es">ES / Espa&ntilde;ol</option>
+                    <option value="es-plain">ES / sin tildes ni &ntilde;</option>
                     <option value="en">EN / English</option>
                   </select>
                 </label>
@@ -643,8 +689,14 @@ export default function App() {
                   </button>
                 </div>
                 <div className="keyboard-preview">
-                  <KeyboardMap active={run.session.input.at(-1)} compact />
-                  <span className="mono">QWERTY / {settings.language.toUpperCase()}</span>
+                  <KeyboardMap
+                    active={run.session.input.at(-1)}
+                    compact
+                    englishLayout={settings.language === 'en' || settings.plainSpanish}
+                  />
+                  <span className="mono">
+                    QWERTY / {settings.language === 'en' || settings.plainSpanish ? 'EN' : 'ES'}
+                  </span>
                 </div>
               </div>
             </section>

@@ -37,12 +37,21 @@ export function createText(
   trainingWords: string[] = [],
   customText = '',
 ): { text: string; source?: string } {
+  const reference = (text: string) =>
+    settings.language === 'es' && settings.plainSpanish
+      ? text.normalize('NFD').replace(/\p{M}/gu, '')
+      : text
   if (settings.mode === 'zen') return { text: '' }
   if (settings.mode === 'custom')
-    return { text: customText.normalize('NFC').trim().replace(/\s+/g, ' ').slice(0, 5000) }
+    return {
+      text: reference(customText.normalize('NFC').trim().replace(/\s+/g, ' ').slice(0, 5000)),
+    }
   if (settings.mode === 'quote' && !trainingWords.length) {
     const pool = quotes[settings.language]
-    return { text: pool[Math.floor(Math.random() * pool.length)], source: 'Retype Original' }
+    return {
+      text: reference(pool[Math.floor(Math.random() * pool.length)]),
+      source: 'Retype Original',
+    }
   }
   const pool = trainingWords.length ? trainingWords : words[settings.language]
   const count = settings.mode === 'words' ? settings.wordCount : 250
@@ -55,5 +64,5 @@ export function createText(
     if (settings.punctuation && index % 7 === 6) word += index % 2 ? ',' : '.'
     output.push(word)
   }
-  return { text: output.join(' ') }
+  return { text: reference(output.join(' ')) }
 }

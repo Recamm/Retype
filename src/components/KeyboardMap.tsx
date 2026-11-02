@@ -1,14 +1,15 @@
-const rows = ['qwertyuiop', 'asdfghjkl\u00f1', 'zxcvbnm']
-
 export default function KeyboardMap({
   mistakes = {},
   active = '',
   compact = false,
+  englishLayout = false,
 }: {
   mistakes?: Record<string, number>
   active?: string
   compact?: boolean
+  englishLayout?: boolean
 }) {
+  const rows = ['qwertyuiop', englishLayout ? 'asdfghjkl;' : 'asdfghjkl\u00f1', 'zxcvbnm']
   const largest = Math.max(1, ...Object.values(mistakes))
   return (
     <div

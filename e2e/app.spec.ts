@@ -188,6 +188,81 @@ test('backups download, merge without duplicates and deletion asks confirmation'
   ).toBe(0)
 })
 
+test('English keyboard Spanish persists and accepts unaccented typing', async ({ page }, info) => {
+  await page.goto('/')
+  await page
+    .getByRole('combobox', { name: 'Idioma de la prueba' })
+    .selectOption('es-plain', { timeout: 3000 })
+  await page.getByRole('button', { name: 'Personalizado', exact: true }).click()
+  await page
+    .getByRole('textbox', { name: 'Texto personalizado' })
+    .fill('ni\u00f1o \u00e1rbol ping\u00fcino')
+  await page.getByRole('button', { name: 'Aplicar texto' }).click()
+  await expect(page.getByTestId('reference')).toHaveText('nino arbol pinguino')
+  await page
+    .getByRole('textbox', { name: 'Texto de la prueba' })
+    .pressSequentially('nino arbol pinguino')
+  await expect(page.getByRole('heading', { name: 'Ese es tu ritmo.' })).toBeVisible()
+  const result = await page.evaluate(
+    () => JSON.parse(localStorage.getItem('retype.v1')!).history[0],
+  )
+  expect(result.accuracy).toBe(100)
+  expect(result.plainSpanish).toBe(true)
+  await page.getByRole('button', { name: 'Ajustes', exact: true }).click()
+  await expect(
+    page.getByRole('checkbox', { name: 'Espa\u00f1ol sin tildes ni \u00f1', exact: true }),
+  ).toBeChecked()
+  await page.reload()
+  await expect(
+    page.getByRole('checkbox', { name: 'Espa\u00f1ol sin tildes ni \u00f1', exact: true }),
+  ).toBeChecked()
+  await page.screenshot({
+    path: `artifacts/keyboard-settings-${info.project.name}.png`,
+    fullPage: true,
+    animations: 'disabled',
+  })
+})
+
+test('restart shortcuts reset attempts without breaking forms or dialogs', async ({ page }) => {
+  await page.goto('/')
+  for (const key of ['Tab', 'Escape', 'Enter', 'F2']) {
+    await page.getByRole('button', { name: 'Ajustes', exact: true }).click()
+    const shortcut = page.getByRole('combobox', { name: 'Tecla de reinicio', exact: true })
+    await expect(shortcut).toBeVisible({ timeout: 3000 })
+    await shortcut.selectOption(key)
+    await page.reload()
+    await expect(shortcut).toHaveValue(key)
+    await page.getByRole('button', { name: 'Practica', exact: true }).click()
+    let input = page.getByRole('textbox', { name: 'Texto de la prueba' })
+    await input.pressSequentially('x')
+    await input.dispatchEvent('keydown', { key, repeat: true })
+    await expect(input).toHaveValue('x')
+    await page.keyboard.press(key)
+    input = page.getByRole('textbox', { name: 'Texto de la prueba' })
+    await expect(input).toHaveValue('')
+    await expect(input).toBeFocused()
+    await completeWords(page)
+    await page.keyboard.press(key)
+    await expect(page.getByRole('textbox', { name: 'Texto de la prueba' })).toHaveValue('')
+  }
+  await page.getByRole('button', { name: 'Personalizado', exact: true }).click()
+  const editor = page.getByRole('textbox', { name: 'Texto personalizado' })
+  await editor.fill('texto del editor')
+  await page.keyboard.press('F2')
+  await expect(editor).toHaveValue('texto del editor')
+  await page.getByRole('button', { name: 'Ajustes', exact: true }).click()
+  await page
+    .getByRole('combobox', { name: 'Tecla de reinicio', exact: true })
+    .selectOption('Escape')
+  await page.getByRole('button', { name: 'Practica', exact: true }).click()
+  await page.getByRole('button', { name: 'Privacidad', exact: true }).click()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog')).not.toBeVisible()
+  await expect(page.getByRole('textbox', { name: 'Texto personalizado' })).toHaveValue(
+    'texto del editor',
+  )
+})
+
 test('invalid backup and unavailable storage fail without data loss', async ({ page }) => {
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => {

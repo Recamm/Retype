@@ -21,6 +21,8 @@ globalmente para resolver un error; revisar el paquete que lo requiere.
 
 - Tiempo: 15, 30, 60 o 120 segundos; palabras: 10, 25, 50 o 100.
 - Citas originales ES/EN, escritura libre Zen y texto personalizado.
+- Espanol sin tildes ni enie para teclado ingles, desde el selector de idioma o Ajustes.
+- Tecla de reinicio configurable en Ajustes: Tab, Escape, Enter o F2; desactivada por defecto.
 - Numeros y puntuacion opcionales en los modos generados.
 - Cursor y tamano de texto configurables; temas claro, oscuro y del sistema.
 - WPM, velocidad bruta, precision, consistencia, grafico y mapa de errores.
@@ -31,6 +33,14 @@ El idioma seleccionado corresponde al contenido del test. La interfaz esta en
 espanol. El mapa visual de teclado es orientativo: no obliga a un layout fisico.
 El editor de texto personalizado acepta pegar; la entrada cronometrada no, para
 que las metricas reflejen intentos de escritura, no texto pegado.
+
+El modo de teclado ingles transforma el texto de referencia, incluidas citas y
+texto personalizado: `nino` en lugar de la palabra con enie, y vocales sin tildes
+ni dieresis. No modifica el idioma ingles ni las pruebas en espanol normal.
+El atajo reinicia desde la escritura o los resultados y mantiene las palabras
+del entrenamiento. Respeta los controles, editores, ventanas, modificadores y
+composicion de texto; no se activa en Ajustes ni Progreso. Ambos ajustes se guardan
+localmente y las copias anteriores siguen siendo compatibles.
 
 ## Datos Y Privacidad
 
@@ -58,6 +68,7 @@ confirmacion. No es una app offline/PWA: necesita cargar sus archivos iniciales.
 El reloj comienza con la primera insercion. Las pruebas por tiempo continuan en
 segundo plano y finalizan en su deadline, aunque el timer se ejecute tarde.
 Los records comparan modo, idioma, longitud, modificadores y entrenamiento.
+El espanol normal y el espanol sin tildes tienen records separados.
 Las medias de progreso son agregados de la seleccion, no records comparables.
 No se afirma equivalencia exacta con las formulas internas de Monkeytype.
 
