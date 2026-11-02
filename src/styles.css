@@ -388,6 +388,7 @@ svg {
   font-family: 'IBM Plex Mono', monospace;
   font-size: var(--rendered-typing-size);
   line-height: 1.8;
+  padding-bottom: 1.8em;
   color: var(--faint);
   overflow-wrap: anywhere;
   white-space: pre-wrap;

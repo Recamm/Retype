@@ -107,6 +107,62 @@ test('practice layout, local fonts and responsive controls', async ({ page }, in
   expect(errors).toEqual([])
 })
 
+test('fast typing keeps the active line in the second row', async ({ page }, info) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Personalizado', exact: true }).click()
+  const words = Array.from({ length: 160 }, (_, index) => (index % 2 ? 'a' : 'palabra'))
+  const target = words.join(' ')
+  await page.getByRole('textbox', { name: 'Texto personalizado' }).fill(target)
+  await page.getByRole('button', { name: 'Aplicar texto' }).click()
+  await page.evaluate(() => document.fonts.ready)
+  const input = page.getByRole('textbox', { name: 'Texto de la prueba' })
+  const thirdLineIndex = await page.locator('.typing-copy').evaluate((element) => {
+    const letters = Array.from(element.querySelectorAll('.letter'))
+    const firstTop = letters[0].getBoundingClientRect().top
+    const lineHeight = parseFloat(getComputedStyle(element).lineHeight)
+    return letters.findIndex(
+      (letter) => letter.getBoundingClientRect().top >= firstTop + 2 * lineHeight - 1,
+    )
+  })
+  expect(thirdLineIndex).toBeGreaterThan(0)
+  const activeRow = () =>
+    page.locator('.typing-viewport').evaluate((viewport) => {
+      const letter = viewport.querySelector('.caret')!.parentElement!
+      const lineHeight = parseFloat(getComputedStyle(viewport.firstElementChild!).lineHeight)
+      const padding = parseFloat(getComputedStyle(viewport).paddingTop)
+      return (
+        Math.round(
+          (letter.getBoundingClientRect().top - viewport.getBoundingClientRect().top - padding) /
+            lineHeight,
+        ) + 1
+      )
+    })
+  expect(await activeRow()).toBe(1)
+  await input.pressSequentially(target.slice(0, thirdLineIndex))
+  await expect.poll(activeRow).toBe(2)
+  let typedLength = thirdLineIndex
+  for (const wordCount of [32, 56, 88, 144, 160]) {
+    const nextLength = Math.min(words.slice(0, wordCount).join(' ').length + 1, target.length - 1)
+    if (nextLength <= typedLength) continue
+    await input.pressSequentially(target.slice(typedLength, nextLength))
+    await expect.poll(activeRow).toBe(2)
+    typedLength = nextLength
+  }
+  expect(await page.locator('.typing-copy .letter.correct').count()).toBeLessThan(target.length - 1)
+  await page.screenshot({
+    path: `artifacts/middle-line-${info.project.name}.png`,
+    fullPage: true,
+    animations: 'disabled',
+  })
+  await input.fill(target.slice(0, thirdLineIndex))
+  await expect.poll(activeRow).toBe(2)
+  for (let index = 0; index < 3; index += 1) await input.press('Control+Backspace')
+  expect(await activeRow()).toBeLessThanOrEqual(2)
+  await page.getByRole('button', { name: 'Reiniciar prueba', exact: true }).click()
+  await expect(input).toHaveValue('')
+  await expect.poll(activeRow).toBe(1)
+})
+
 test('system theme follows the device and manual preferences persist', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'light' })
   await page.goto('/')
